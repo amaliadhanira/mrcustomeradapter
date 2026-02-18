@@ -19,12 +19,22 @@ public class CustomerController {
         this.service = service;
     }
 
-    @PostMapping
+    @PostMapping("/inputCustomer")
     public Mono<Customer> create(@RequestBody Customer customer) {
         return service.create(customer);
     }
 
-    @GetMapping
+    @PostMapping("/login")
+    public Mono<Customer> loginCustomer(@RequestBody Customer customer){
+        return service.login(customer.getEmail(), customer.getPassword());
+    }
+
+    @PostMapping("/editCustomer/{id}")
+    public Mono<Customer> editCustomer(@PathVariable UUID id, @RequestBody Customer customer){
+        return service.edit(id, customer);
+    }
+
+    @GetMapping("/allCustomer")
     public Flux<Customer> getAll() {
         return service.findAll();
     }
