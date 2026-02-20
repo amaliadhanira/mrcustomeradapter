@@ -25,11 +25,11 @@ public class CustomerController {
     }
 
     @PostMapping("/login")
-    public Mono<Customer> loginCustomer(@RequestBody Customer customer){
+    public Mono<Boolean> loginCustomer(@RequestBody Customer customer){
         return service.login(customer.getEmail(), customer.getPassword());
     }
 
-    @PostMapping("/editCustomer/{id}")
+    @PutMapping("/editCustomer/{id}")
     public Mono<Customer> editCustomer(@PathVariable UUID id, @RequestBody Customer customer){
         return service.edit(id, customer);
     }
@@ -44,7 +44,7 @@ public class CustomerController {
         return service.findById(id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteCustomer/{id}")
     public Mono<Void> delete(@PathVariable UUID id) {
         return service.delete(id);
     }

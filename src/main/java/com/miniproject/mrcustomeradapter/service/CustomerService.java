@@ -2,6 +2,7 @@ package com.miniproject.mrcustomeradapter.service;
 
 import com.miniproject.mrcustomeradapter.entity.Customer;
 import com.miniproject.mrcustomeradapter.repository.CustomerRepository;
+import com.miniproject.mrcustomeradapter.util.JwtUtil;
 import com.miniproject.mrcustomeradapter.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
@@ -22,8 +23,11 @@ public class CustomerService {
 
     private final CustomerRepository repository;
 
-    public CustomerService(CustomerRepository repository) {
+    private final JwtUtil jwtUtil;
+
+    public CustomerService(CustomerRepository repository, JwtUtil jwtUtil) {
         this.repository = repository;
+        this.jwtUtil = jwtUtil;
     }
 
     public Mono<Customer> create(Customer customer) {
@@ -36,9 +40,10 @@ public class CustomerService {
                 .using(customer);
     }
 
-    public Mono<Customer> login(String email, String rawPassword) {
+    public Mono<Boolean> login(String email, String rawPassword) {
         return repository.findByEmail(email)
-                .filter(user -> PasswordUtil.matches(rawPassword, user.getPassword()));
+                .map(user -> PasswordUtil.matches(rawPassword, user.getPassword()))
+                .defaultIfEmpty(false);
     }
 
     public Mono<Customer> edit(UUID id, Customer customer){
